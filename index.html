@@ -1,0 +1,172 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Food Wizard</title>
+
+  <!-- Подключаем PyScript -->
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.6.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2024.6.1/core.js"></script>
+
+  <!-- Подключаем шрифты Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
+  
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    /* Фон через ::before */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("images/food-bg.jpg") no-repeat center center;
+      background-size: cover;
+      z-index: -1; /* фон уходит под весь контент */
+    }
+    /* Общий фон и шрифты */
+    body {
+      font-family: 'Press Start 2P', sans-serif;
+      padding: 50px;
+      min-height: 100vh;
+      text-align: center;
+      color: #fff;
+    }
+
+    /* Первая надпись - Food Wizzard */
+    h1 {
+      font-family: 'Press Start 2P', bold;
+      color: #fff;
+      text-shadow: none; /* убрали тень */
+      font-size: 100px;
+      margin-bottom: 5px;
+    }
+
+    /* Вторая надпись */
+    p.subtitle {
+      color: #fff; /* золотой цвет */
+      font-size: 60px; 
+      font-family: 'Jersey 15', bold; 
+      text-shadow: none; 
+      margin-bottom: 5px;
+    }
+
+    /* Кнопка */
+    button {
+      background: #33306E;
+      color: white; 
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-family: 'Press Start 2P', monospace;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    }
+    button:hover {
+      background: #33306E;
+      transform: scale(1.1);
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.6);
+    }
+
+    /* Блок вывода текста */
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      display: inline-block;
+      text-align: center;
+      white-space: pre-line;
+      font-family: 'Jersey 15', monospace;
+      font-weight: bold;
+      font-size: 50px;
+      color: #4F3B39;
+    }
+
+    /* Картинка шефа */
+    #chef-img {
+      width: 400px;
+      margin-bottom: 1px;
+    }
+  </style>
+</head>
+<body>
+  <audio id="bg-music" src="music/background.mp3" loop></audio>
+  <audio id="click-sound" src="music/click.mp3"></audio>
+  
+  <h1>✨ Food Wizzard ✨</h1>
+  <img id="chef-img" src="images/chef.png" alt="Food Wizard">
+  <p class="subtitle">This is your food wizaed! Press 'CLIC' for generate today's dinner scheme!</p>
+
+  <div id="button-container" style="margin-bottom:20px;">
+    <button py-click="on_button_click">CLIC CLIC CLIC</button>
+  </div> 
+
+  <div id="output"></div>
+  
+   <script>
+    // Включаем музыку после первого клика
+    document.addEventListener("click", () => {
+      const music = document.getElementById("bg-music");
+      if (music.paused) {
+        music.play();
+      }
+    }, { once: true });
+  </script>
+
+  <py-script>
+import random
+from js import document
+def play_click_sound(event=None):
+    click_sound = document.getElementById("click-sound")
+    click_sound.currentTime = 0
+    click_sound.play()
+    
+def generate_dinner(event=None):
+    protein = ["fish","meat","chiken","tofu","chickpea","lentils","beens","eggs"]
+    long_carbs = ["whole grain pasta","brown rice","potato","batat","buckweat","quinoa","glass noodle","soba"]
+    style = ["asian","mexican","SLAVIC","amerikkkan","frmrmeowch","itttalian","indian"]
+    veg_for_salad = ["carrot","cucumber","tomato chemry","bell pepper","broocooli","pinapple","mamngo","tomato biggg","cormn","pea","green beens","radish","avocado","olives","apple","celery"]
+    salad_base = ["lettuce","arugula","isberg","napa","romano","basic cabbage","spinach"]
+    cooking_veg = ["carrot","tomato biggg","broocooli","eggplant","green beems","zuccini","onion","bell pepper","pumkim","califlower"]
+    salad_dress = ["yougut","lemon oil","honey mustard","sweet chilli","soy sauce vinehar","herbs oil","salmsa"]
+    snamks = ["see weed","numts","fruits","antremes","jerks","popcormn","c h e e z e"]
+    dish_type = ["soup", "stewm", "baked", "fresh", "stir fry", "b o u w l", "pasta"]
+
+    random_protein = random.choice(protein)
+    random_long_carbs = random.choice(long_carbs)
+    random_style = random.choice(style)
+    final_salad = random.sample(veg_for_salad, 3)
+    random_salad_base = random.choice(salad_base)
+    final_veg = random.sample(cooking_veg, 3)
+    random_salad_dress = random.choice(salad_dress)
+    random_snamks = random.choice(snamks)
+    random.shuffle(dish_type)
+    random_dish_type = random.choice(dish_type)
+
+    result = f"""🍴 TODAY'S MEAL:
+{random_protein} base with {random_long_carbs} for garnish, and with
+cooking vegs like {', '.join(final_veg)}! 
+Prepare as {random_dish_type} in {random_style} style! 
+
+AAAAND base for salad is {random_salad_base} with {', '.join(final_salad)} (+ {random_salad_dress} dressing!)
+
+wait a sec....how can i forget about SNAK??? today's snak IIIIS {random_snamks}"""
+
+    document.getElementById("output").innerText = result
+def on_button_click(event=None):
+    play_click_sound()
+    generate_dinner()
+  </py-script>
+</body>
+</html>
